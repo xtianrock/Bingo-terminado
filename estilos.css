@@ -1,3 +1,9 @@
+/*********************************
+Autor: Cristian Vizcaino
+Fecha creación: 12/01/2015
+Última modificación: 06/02/2015
+Versión: 1.00
+***********************************/
 #zonaJuego
 {
     margin:0;
@@ -7,7 +13,7 @@
 }
 #menu
 {
-    margin-top: 100px;
+    margin-top: 350px;
 }
 #carton
 {
@@ -20,26 +26,9 @@
     box-shadow: 0px 4px #009de4, 0px 10px 15px rgba(0, 0, 0, 0.2);
 
 }
-#cabecera
-{
-    background: #ffffff;
-    height: 15%;
-    width: 100%;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-}
 
 
-#cuerpo
-{
-    background: #ffffff;
-    height: 85%;
-    width: 100%;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
 
-
-}
 
 .fila
 {
@@ -54,17 +43,15 @@
 
 .casilla
 {
-    background: #38a8e1;
+    background: #ffffff;
     float: left;
     height: 50px;
     width: 50px;
     margin: 5px;
-
-
     cursor: pointer;
     border-radius: 6px;
     box-shadow: 0px 4px rgba(0, 0, 0, 0.2);
-    color: #ffffff;
+    color: #000000;
     line-height: 36px;
     text-align: center;
     transition: all 0.2s ease;/* Animacion para el cambio entre normal y active y para el hover*/
@@ -72,17 +59,21 @@
 
 #bombo
 {
+    margin: 0 auto;
     background: #28b3ff;
     height: 80px;
-    width: 80px;
-    margin: 0 auto;
+    width: 95px;
+    text-align: center;
+    border-radius: 6px;
+    box-shadow: 0px 4px #009de4, 0px 10px 15px rgba(0, 0, 0, 0.2);
     font-size: 4em;
+    color: #ffffff;
 }
 
 .tapado
 {
-    background: #27da25;
-    color: #27da25;
+    background: #38a8e1;
+    color: #38a8e1;
     float: left;
     height: 50px;
     width: 50px;
@@ -95,6 +86,11 @@
     line-height: 36px;
     text-align: center;
     transition: all 0.2s ease;/* Animacion para el cambio entre normal y active y para el hover*/
+}
+image
+{
+    height: 40px;
+    width: 40px;
 }
 .marcado
 {

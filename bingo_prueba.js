@@ -1,6 +1,9 @@
-/**
- * Created by 2DAWT on 27/01/2015.
- */
+/*********************************
+ Autor: Cristian Vizcaino
+ Fecha creación: 12/01/2015
+ Última modificación: 06/02/2015
+ Versión: 1.00
+ ***********************************/
 var arrayNumeros=[];
 var zonaJuego;
 var bolasSacadas=[];
@@ -46,6 +49,7 @@ function prepararBingo()
         class: 'btn btn-default',
         text: 'Bingo!'
     }).appendTo(zonaJuego);
+
     $( "#botonBingo" ).bind( "click", function() {
         comprobarBingo();
     });
@@ -134,8 +138,7 @@ function Carton()
             else
             {
                 $('<div/>', {
-                    class: 'tapado',
-                    text: aleatorio(j)
+                    class: 'tapado'
                 }).appendTo(fila);
             }
         }
@@ -166,11 +169,11 @@ function comprobarBingo()
             break;
         }
     }
-    if(bingo&&casillas.get().length==15)
+    if(bingo&&casillas.get().length)
     {
         var ventana = window.open("bingoCorrecto.html", "_blank", "width=700,height=400");
         ventana.onload = function () {
-            ventana.document.getElementById('premio').innerHTML = '1231243';
+            ventana.document.getElementById('premio').innerHTML = puntuacion();
         };
     }
     else
@@ -191,7 +194,7 @@ function marcarCasilla(casilla)
 
 function puntuacion()
 {
-
+    return jugadores*valor*0.8;
 }
 
 
