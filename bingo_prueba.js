@@ -162,16 +162,20 @@ function comprobarBingo()
     {
         if( bolasSacadas.indexOf(casillas.eq(i).text())==-1||casillas.get().length<15)
         {
-            window.open("bingoIncorrecto.html", "_blank", "width=550,height=250");
+            bingo=false;
             break;
         }
     }
-    if(bingo)
+    if(bingo&&casillas.get().length==15)
     {
         var ventana = window.open("bingoCorrecto.html", "_blank", "width=700,height=400");
         ventana.onload = function () {
             ventana.document.getElementById('premio').innerHTML = '1231243';
         };
+    }
+    else
+    {
+        window.open("bingoIncorrecto.html", "_blank", "width=550,height=250");
     }
 }
 
