@@ -4,23 +4,47 @@
  Última modificación: 06/02/2015
  Versión: 1.00
  ***********************************/
+//Array que relleno de numeros desde el 1 al 90.
+var bolas=[];
+// A la funcion ajax le paso su tamaño para que me devuelva
+// un aleatorio que usare como indice para sacar los numeros de este array,
+//de esta forma evito los bucles while con los indexOf, que funcionan bien
+// en los primeros numeros pero muy mal cuando quedan pocas opciones.
 var arrayNumeros=[];
 var zonaJuego;
 var bolasSacadas=[];
+var numerosCarton=[];
 var jugadores;
 var valor;
+
+
 window.onload=function()
 {
     zonaJuego=$('#zonaJuego').get(0);
 
     var comenzar=document.getElementById('comenzar');
     comenzar.addEventListener("click",comenzarJuego);
+
+    for (var i=1;i<91;i++)
+    bolas.push(i);
 }
+/**
+ * Limpia los arrays (necesaria para una segunda partida),
+ * preapara el carton, e inicia el intervalo.
+ */
 function comenzarJuego() {
+    arrayNumeros=[];
+    bolasSacadas=[];
+    numerosCarton=[];
     prepararBingo();
-    getNumeroBombo();
-    intervalo = setInterval(getNumeroBombo, 200);
+    solicitarNumeroAjax();
+    intervalo = setInterval(solicitarNumeroAjax, 5000);
 }
+
+/**
+ * Crea el bombo, carton y boton, ademas añade enventos
+ * onclick a las casillas y al boton de cantar bingo
+ */
 function prepararBingo()
 {
     jugadores=$('#jugadores').val();
@@ -48,7 +72,7 @@ function prepararBingo()
         id: 'botonBingo',
         class: 'btn btn-default',
         text: 'Bingo!'
-    }).appendTo(zonaJuego);
+    }).appendTo($('#menu'));
 
     $( "#botonBingo" ).bind( "click", function() {
         comprobarBingo();
@@ -56,26 +80,37 @@ function prepararBingo()
 
 }
 
-function getNumeroBombo(numero) {
-    if (numero == undefined) {
-        $.ajax({
-            type: "POST",
-            dataType: "html",
-            contentType: "application/x-www-form-urlencoded",
-            url: "numeroAleatorio.php",
-            success: getNumeroBombo,
-            timeout: 4000
-        });
-    } else {
-        if (bolasSacadas.indexOf(numero) == -1) {
-            $("#bombo").text(numero);
-            bolasSacadas.push(numero);
-        } else {
-            return getNumeroBombo();
-        }
-    }
+
+function solicitarNumeroAjax()
+{
+    $.ajax({
+        type: "POST",
+        dataType: "html",
+        data:{maximo:bolas.length},
+        contentType: "application/x-www-form-urlencoded",
+        url: "numeroAleatorio.php",
+        success: procesarAjax,
+        timeout: 4000
+    });
 }
 
+
+function procesarAjax(numero)
+{
+    var numeroBombo= bolas.splice(numero, 1);
+    $("#bombo").text(numeroBombo);
+    bolasSacadas.push(numeroBombo[0]);
+    if(!bolas.length)
+        clearInterval(intervalo);
+}
+
+
+/**
+ * Funcion a la que le pasamos el numero de columna y nos devuelve
+ * un aleatorio cuyo valor este entre los permitidos por dicha columna
+ * @param numero columna
+ * @returns {number} aleatorio valido para la columna dada
+ */
 function aleatorio(numero) {
     if (numero==0)
     {
@@ -97,6 +132,11 @@ function aleatorio(numero) {
     arrayNumeros.sort();
     return aleatorio;
 }
+
+/**
+ * Devuelve un array aleatorio con los indices de elementos que se deben tapar
+ * @returns {Array|*}
+ */
 function numerosTapados()
 {
     tapados=[];
@@ -112,6 +152,11 @@ function numerosTapados()
     return tapados;
 }
 
+/**
+ * Objeto carton
+ * @returns {HTMLElement}
+ * @constructor
+ */
 function Carton()
 {
     var carton=document.createElement('div');
@@ -130,6 +175,7 @@ function Carton()
         {
             if(tapados.indexOf(j+1)==-1)
             {
+                numerosCarton.push(aleatorio(j));
                 $('<div/>', {
                     class: 'casilla',
                     text: aleatorio(j)
@@ -148,6 +194,12 @@ function Carton()
     return carton;
 }
 
+
+/**
+ * Objeto bombo
+ * @returns {HTMLElement}
+ * @constructor
+ */
 function Bombo()
 {
     var bombo=document.createElement('div');
@@ -157,19 +209,23 @@ function Bombo()
 }
 
 
+/**
+ * Se encarga de comprobar si el bingo es valido y muestra
+ * ventanas emergentes indicandolo
+ */
 function comprobarBingo()
 {
-    var casillas=$('.marcado');
+    var casillasMarcadas=$('.marcado');
     bingo=true;
-    for (var i=0;i<casillas.get().length;i++)
+    for (var i=0;i<numerosCarton.length;i++)
     {
-        if( bolasSacadas.indexOf(casillas.eq(i).text())==-1||casillas.get().length<15)
+        if( bolasSacadas.indexOf(numerosCarton[i])==-1||casillasMarcadas.size()<15)
         {
             bingo=false;
             break;
         }
     }
-    if(bingo&&casillas.get().length)
+    if(bingo)
     {
         var ventana = window.open("bingoCorrecto.html", "_blank", "width=700,height=400");
         ventana.onload = function () {
@@ -182,7 +238,10 @@ function comprobarBingo()
     }
 }
 
-
+/**
+ * Funcion que marca y desmarca casillas
+ * @param casilla indica la casilla sobre la que actuar
+ */
 function marcarCasilla(casilla)
 {
     if(casilla.attr('class')!='marcado')
@@ -192,6 +251,11 @@ function marcarCasilla(casilla)
 
 }
 
+
+/**
+ * Calcula la puntuacion
+ * @returns {number} puntuacion
+ */
 function puntuacion()
 {
     return jugadores*valor*0.8;
